@@ -28,7 +28,7 @@
     const json = await response.json();
     const label = json['data'][0]['confidences'][0]['label'];
     const label1 = json['data'][0]['confidences'][1]['label'];
-    const label2 = json['data'][0];
+    const label2 = json['data'][0]['confidences'][2]['label'];
     results.innerHTML = `<br/><img src="${reader.result}" width="300"> <p>${label}</p> <p>${label1}</p> <p>${label2}</p>`
   }
   function read() {
