@@ -1,39 +1,60 @@
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style type="text/css" media="screen">
+    .container {
+      margin: 10px auto;
+      max-width: 600px;
+      text-align: center;
+    }
+    h1 {
+      margin: 30px 0;
+      font-size: 4em;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .result {
+      margin: 20px;
+    }
+  </style>
+  <title>Multi-Pets Classifier</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Multi-Pets Classifier</h1>
+    <p><strong>Select multiple images of Pets to Classify</strong></p>
+    <input id="photos" type="file" multiple>
+    <div id="results"></div>
+  </div>
 
-<div class="container">
-  <h1>Multi-Pets Classifier</h1>
-  <p><strong>Select multiple images of Pets to Classify</strong></p>
-  <input id="photos" type="file" multiple="">
-</div>
+  <script>
+    async function loaded(reader) {
+      const response = await fetch('https://jph00-pets.hf.space/api/predict/', {
+        method: "POST",
+        body: JSON.stringify({ "data": [reader.result] }),
+        headers: { "Content-Type": "application/json" }
+      });
+      const json = await response.json();
+      const confidences = json['data'][0]['confidences'];
+      const resultDiv = document.createElement('div');
+      resultDiv.classList.add('result');
+      resultDiv.innerHTML = `<br/><img src="${reader.result}" width="300">` +
+        confidences.map(conf => `<p>${conf['label']}</p>`).join('');
+      document.getElementById('results').append(resultDiv);
+    }
 
-<script>
-  async function loaded(reader) {
-    const response = await fetch('https://jph00-pets.hf.space/api/predict/', {
-      method: "POST", body: JSON.stringify({ "data": [reader.result] }),
-      headers: { "Content-Type": "application/json" }
+    function read(file) {
+      const reader = new FileReader();
+      reader.addEventListener('load', () => loaded(reader));
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById('photos').addEventListener('input', () => {
+      document.getElementById('results').innerHTML = '';
+      [...document.getElementById('photos').files].forEach(read);
     });
-    const json = await response.json();
-    const label = json['data'][0]['confidences'][0]['label'];
-    const div = document.createElement('div');
-    div.innerHTML = `<br/><img src="${reader.result}" width="300"> <p>${label}</p> <p>${label2}</p>`
-    document.body.append(div);
-  }
-  function read(file) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => loaded(reader))
-    reader.readAsDataURL(file);
-  }
-  photos.addEventListener('input', () => { [...photos.files].map(read) });
-</script>
+  </script>
+</body>
+</html>
