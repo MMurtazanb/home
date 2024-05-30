@@ -26,7 +26,7 @@
     <h1>Multi-Pets Classifier</h1>
     <p><strong>Select multiple images of Pets to Classify</strong></p>
     <input id="photos" type="file" multiple>
-    <div id="resultsDiv"></div>
+    <div id="results"></div>
   </div>
 
   <script>
@@ -37,7 +37,7 @@
         headers: { "Content-Type": "application/json" }
       });
       const json = await response.json();
-      const confidences = json['data'][0]['confidences'].slice(0, 3);
+      const confidences = json['data'][0]['confidences'].slice(0, 3); // Limit to top 3 results
       const resultDiv = document.createElement('div');
       resultDiv.classList.add('result');
       resultDiv.innerHTML = `<br/><img src="${reader.result}" width="300">` +
