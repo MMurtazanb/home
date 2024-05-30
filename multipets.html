@@ -37,7 +37,7 @@
         headers: { "Content-Type": "application/json" }
       });
       const json = await response.json();
-      const confidences = json['data'][0]['confidences'];
+      const confidences = json['data'][0]['confidences'].slice(0, 3);
       const resultDiv = document.createElement('div');
       resultDiv.classList.add('result');
       resultDiv.innerHTML = `<br/><img src="${reader.result}" width="300">` +
