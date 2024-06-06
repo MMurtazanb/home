@@ -8,3 +8,5 @@
 [Lets Check a Multi-Pets CLassifier](multipets.html)
 
 
+# Image Generation
+[Use Reference Image](imggen.html)
